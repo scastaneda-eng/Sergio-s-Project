@@ -2,9 +2,9 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import App from './App';
 
-jest.mock('colorthief', () => ({
+vi.mock('colorthief', () => ({
   __esModule: true,
-  getPalette: jest.fn(),
+  getPalette: vi.fn(),
 }));
 
 import { getPalette } from 'colorthief';
@@ -44,7 +44,7 @@ const uploadAndExtract = async (file) => {
 };
 
 beforeEach(() => {
-  jest.clearAllMocks();
+  vi.clearAllMocks();
 });
 
 test('renders the heading', () => {
@@ -92,7 +92,7 @@ test('happy path: a JPG renders the extracted palette', async () => {
 });
 
 test('shows a friendly message when getPalette throws', async () => {
-  jest.spyOn(console, 'error').mockImplementation(() => {});
+  vi.spyOn(console, 'error').mockImplementation(() => {});
   getPalette.mockRejectedValue(new Error('decode failed'));
   render(<App />);
   await uploadAndExtract(makeFile('logo.jpg', 'image/jpeg'));
@@ -116,7 +116,7 @@ test('shows a CORS-aware message when the hidden image fails to load', async () 
 });
 
 test('announces clipboard copy via the aria-live region', async () => {
-  const writeText = jest.fn().mockResolvedValue(undefined);
+  const writeText = vi.fn().mockResolvedValue(undefined);
   Object.defineProperty(navigator, 'clipboard', {
     value: { writeText },
     configurable: true,
